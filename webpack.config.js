@@ -5,25 +5,29 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
   mode: 'development', // production development
   entry: './src/index.js',
-  output:{
-    filename: "bundle[hash:8].js",
+  output: {
+    filename: "bundle.[hash:8].js",
     path: path.resolve(__dirname, 'dist')
   },
   devtool: 'inline-source-map',
-  devServer:{
-    contentBase: './dist',
+  devServer: {
+    contentBase: path.resolve(__dirname, 'dist'),
     hot: true,
-    port: 6666,
+    port: 3000,
     compress: true,
     open: true
   },
-  plugins:[
+  plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       title: '测试title',
       filename: 'index.html',
       template: './index.html',
       inject: true,
+      minify: {
+        removeAttributeQuotes: true,
+        collapseWhitespace: true
+      },
       hash: true
     })
   ]

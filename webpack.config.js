@@ -15,7 +15,7 @@ module.exports = {
     hot: true,
     port: 3000,
     compress: true,
-    open: true
+    open: false
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -31,11 +31,27 @@ module.exports = {
       hash: true
     })
   ],
-  module:{
-    rules:[
+  module: {
+    rules: [
       {
         test: /.css$/,
-        loader:['style-loader', 'css-loader']
+        loader: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.less$/,
+        use: [
+          "style-loader", // creates style nodes from JS strings
+          "css-loader", // translates CSS into CommonJS
+          "less-loader" // compiles Sass to CSS, using Node Sass by default
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          "style-loader", // creates style nodes from JS strings
+          "css-loader", // translates CSS into CommonJS
+          "sass-loader" // compiles Sass to CSS, using Node Sass by default
+        ]
       }
     ]
   }

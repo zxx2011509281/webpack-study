@@ -1,58 +1,52 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
-  mode: 'development', // production development
-  entry: './src/index.js',
-  output: {
-    filename: "bundle.[hash:8].js",
-    path: path.resolve(__dirname, 'dist')
-  },
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: path.resolve(__dirname, 'dist'),
-    hot: true,
-    port: 3000,
-    compress: true,
-    open: false
-  },
-  plugins: [
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin({
-      title: '测试title',
-      filename: 'index.html',
-      template: './index.html',
-      inject: true,
-      minify: {
-        removeAttributeQuotes: true,
-        collapseWhitespace: true
-      },
-      hash: true
-    })
-  ],
-  module: {
-    rules: [
-      {
-        test: /.css$/,
-        loader: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.less$/,
-        use: [
-          "style-loader", // creates style nodes from JS strings
-          "css-loader", // translates CSS into CommonJS
-          "less-loader" // compiles Sass to CSS, using Node Sass by default
-        ]
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          "style-loader", // creates style nodes from JS strings
-          "css-loader", // translates CSS into CommonJS
-          "sass-loader" // compiles Sass to CSS, using Node Sass by default
-        ]
-      }
-    ]
-  }
-};
+    mode: 'production', //production  development
+    entry: './src/index.js',
+    output: {
+        filename: '[name].bundle.[hash:5].js',
+        path: path.resolve(__dirname, 'dist/js')
+    },
+    devServer: {
+        contentBase: './dist',
+        compress: true,
+        port: 2222
+    },
+    optimization: {
+        minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+    },
+    plugins: [
+        new CleanWebpackPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '../css/[name].css',
+            chunkFilename: '../css/[id].css',
+        }),
+        new HtmlWebpackPlugin({
+            filename: '../index.html',
+            title: '测试标题',
+            template: './index.html',
+            hash: true,
+            minify: {
+                removeComments: true,
+                collapseWhitespace: true,
+                removeAttributeQuotes: true
+            }
+        })
+    ],
+    module: {
+        rules: [{
+                test: /\.css$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', "postcss-loader"],
+            },
+            {
+                test: /\.less$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', "postcss-loader", 'less-loader']
+            }
+        ],
+    },
+}

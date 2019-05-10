@@ -1,5 +1,7 @@
-@import './index2.css';
-
 body{
-    background-color: pink;
+  background-color: pink;
+}
+.p2{
+  background-color: black;
+  transform: translateY(20px);
 }
